@@ -9,3 +9,11 @@ import pandas
 # to prevent SQL injection
 def checkSQL(statement):
     return
+
+""" 
+OTHER REQUIREMENTS:
+You must demonstrate at least one case where:
+    - The LLM-generated code was incorrect
+    - Your tests caught the issue
+    - You refined the implementation
+"""

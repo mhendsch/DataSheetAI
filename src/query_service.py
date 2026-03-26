@@ -1,6 +1,8 @@
 import sqlite3
 import pandas
 import schema_manager
+import sql_validator
+import llm_adapter
 
 
 print("What would you like to do today?: ")
