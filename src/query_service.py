@@ -13,3 +13,11 @@ while (user_input.lower() != "q"):
     # Validate against Database
 
     # If valid, call LLM Adapter
+
+
+    # Take input from LLM adapter, create query
+    # Format query, make sure AI is not doing anything 
+    # it's not supposed to (use SQL validator)
+
+
+print("\nHave a nice day!")
