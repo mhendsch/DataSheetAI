@@ -10,9 +10,9 @@ client = anthropic.Anthropic()
 
 # Generate SQL statement based on user input
 def generateSQL(db, input):
+    
     table_columns = schema_manager.getDatabaseSchema(db)
     print(table_columns)
-
     
     message = client.messages.create(
     model = 'claude-haiku-4-5-20251001',
@@ -30,6 +30,27 @@ def generateSQL(db, input):
     # Print the text of the message (for debugging purposes only))
     print(f"{message.content[0].text}")
     return message.content[0].text
-    
 
-generateSQL("my_database.db", "Show me the color with the highest hex value in the colors table.")
+def stripSQLfromResponse(response):
+    """ Format: '''sql 
+    SQL QUERY;
+    '''
+    """
+    # Split response into lines and find the line that starts with "```sql"
+    lines = response.splitlines()
+    sql_query = ""
+    in_sql_block = False
+    for line in lines:
+        if line.strip().startswith("```sql"):
+            in_sql_block = True
+            continue
+        elif line.strip().startswith("```") and in_sql_block:
+            in_sql_block = False
+            continue
+        if in_sql_block:
+            sql_query += line + "\n"
+    return sql_query
+
+myResponse = generateSQL("my_database.db", "Which region has the most countries?")
+mySQL = stripSQLfromResponse(myResponse)
+print(f"Generated SQL Query:\n{mySQL}")

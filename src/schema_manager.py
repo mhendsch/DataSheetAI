@@ -21,7 +21,22 @@ def generateCreateTableStatement(df):
 
 # Gets existing table schema of specific table in db
 def getTableSchema(db, table_name):
-
+    # Connect to database and get table schema
+    conn = sqlite3.connect(db)
+    cursor = conn.cursor()
+    # Get table columns
+    # Make sure table exists
+    cursor.execute(f"SELECT count(*) FROM sqlite_master WHERE type='table' AND name='{table_name}'")
+    if cursor.fetchone()[0] == 0:
+        print(f"Table '{table_name}' does not exist.")
+        conn.close()
+        return 1
+    cursor.execute(f"PRAGMA table_info({table_name})")
+    temp_columns = cursor.fetchall()
+    # Concatenate column names and types
+    columns = {row[1]: row[2] for row in temp_columns}
+    schema[table_name] = columns
+    conn.close()
     return schema
 
 # Gets table schema of entire database

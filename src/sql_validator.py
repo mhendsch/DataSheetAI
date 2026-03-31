@@ -36,11 +36,14 @@ def checkSQL(db, statement):
         if any(column in statement for column in columns):
             contains_known_columns = True
             break
-    if not contains_known_columns:
+    # If no known columns are referenced, reject the query
+    # Includes handling for SELECT * FROM table_name, make sure in 2nd position
+    if not contains_known_columns and statement.strip().lower().split()[1] != '*':
         print("Query references unknown columns.")
         conn.close()
-        return 1    
+        return 1
 
+    conn.close()
     return 0
 
 
