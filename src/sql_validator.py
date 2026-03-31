@@ -8,7 +8,18 @@ import pandas
 # From Cybersecurity: disallow characters like " or - 
 # to prevent SQL injection
 def checkSQL(statement):
-    return
+    # Check for malicious characters
+    if any(char in statement for char in ['"', "'", ';', '--']):
+        print("Query contains potentially malicious characters. Please provide a valid SQL query.")
+        return 1
+    # Only allow SELECT queries
+    if not statement.strip().lower().startswith('select'):
+        print("Only SELECT queries are allowed.")
+        return 1
+    # Check for unknown tablses and columns
+    
+
+    return 0
 
 """ 
 OTHER REQUIREMENTS:

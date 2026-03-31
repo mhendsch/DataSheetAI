@@ -5,7 +5,7 @@ import sql_validator
 
 
 # Manually create a table in SQLite
-def createTable(columns, table_name):
+def createTable(db, columns, table_name):
     # Error check user input
     if (not isinstance(columns, list) or len(columns) == 0):
         print("Columns must be a non-empty list. Please provide a valid list of columns.")
@@ -20,7 +20,7 @@ def createTable(columns, table_name):
         print("All column names must be strings. Please provide a valid list of column names.")
         return 1
     # Connect to database
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect(db)
     cursor = conn.cursor()
     # Create table with specified columns of TEXT type
     columns_with_types = ', '.join([f"{col} TEXT" for col in columns])
@@ -35,7 +35,7 @@ def loadCSV(filename):
 
 # Insert data from pandas dataframe into SQLite table
 # Constraints: Cannot use .to_sql() method, must use SQL INSERT statements
-def insertData(df, table_name):
+def insertData(db, df, table_name):
     # Error check user input
     if (df.empty):
         print("DataFrame is empty. No data to insert.")
@@ -53,7 +53,7 @@ def insertData(df, table_name):
         print("DataFrame has no columns. Please provide a DataFrame with columns.")
         return 1
     # Connect to SQLite database and insert data    
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect(db)
     cursor = conn.cursor()
 
     # Check to make sure table exists
@@ -74,8 +74,8 @@ def insertData(df, table_name):
     return 0
 
 # Query data from SQLite table and return as pandas dataframe
-def queryData(query):
-    conn = sqlite3.connect('database.db')
+def queryData(db, query):
+    conn = sqlite3.connect(db)
     # Error check query
     if (sql_validator.checkSQL(query) == 0):
         print("Query failed validation. Please provide a valid SQL query.")
