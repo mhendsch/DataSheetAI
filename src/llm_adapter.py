@@ -16,7 +16,7 @@ def generateSQL(db, input):
     
     message = client.messages.create(
     model = 'claude-haiku-4-5-20251001',
-    system=f"""You are an AI assistant tasked with converting user queries into SQL statements. The database uses SQLite and contains the following tables and columns: {table_columns}. Your task is to: 1. Generate a SQL query that accurately answers the user's question. 2. Ensure the SQL is compatible with SQLite syntax. 3. Provide a short comment explaining what the query does. Output Format: - SQL Query - Explanation""",
+    system=f"""You are an AI assistant tasked with converting user queries into SQL statements. The database uses SQLite and contains the following tables and columns: {table_columns}. Your task is to: 1. Generate a SQL query that accurately answers the user's question. 2. Ensure the SQL is compatible with SQLite syntax. 3. Only allow SELECT queries. 4. If the user asks for information from a table or column that doesn't exist, do NOT put '''sql in your response, as that is used to indicate a SQL block in your response. 5. Provide a short comment explaining what the query does. Output Format: - SQL Query - Explanation""",
     max_tokens=1024,
     messages=[
         {
@@ -51,6 +51,6 @@ def stripSQLfromResponse(response):
             sql_query += line + "\n"
     return sql_query
 
-myResponse = generateSQL("my_database.db", "Which region has the most countries?")
+myResponse = generateSQL("my_database.db", "Count how many students are in the class.")
 mySQL = stripSQLfromResponse(myResponse)
 print(f"Generated SQL Query:\n{mySQL}")
