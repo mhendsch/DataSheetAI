@@ -10,21 +10,7 @@ client = anthropic.Anthropic()
 
 # Generate SQL statement based on user input
 def generateSQL(db, input):
-    # Get tables in db
-    conn = sqlite3.connect(db)
-    cursor = conn.cursor()
-    cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
-    # Filter for sql_sequence, which is not created by user
-    tables = [row[0] for row in cursor.fetchall() if not row[0].startswith("sqlite_")]
-
-    # Get columns in each table
-    table_columns = {}
-    for table in tables:
-        cursor.execute(f"PRAGMA table_info({table})")
-        temp_columns = cursor.fetchall()
-        columns = {row[1]: row[2] for row in temp_columns}
-        table_columns[table] = columns
-
+    table_columns = schema_manager.getDatabaseSchema(db)
     print(table_columns)
 
     

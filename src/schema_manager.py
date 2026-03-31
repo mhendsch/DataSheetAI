@@ -15,11 +15,33 @@ def readTable(filename):
 # Generate SQL statement
 # Should have a PRIMARY KEY AUTOINCREMENT
 def generateCreateTableStatement(df):
+
+    columns = [""]
     return
 
-# Gets existing table schema
-def getTableSchema(df):
-    return
+# Gets existing table schema of specific table in db
+def getTableSchema(db, table_name):
+
+    return schema
+
+# Gets table schema of entire database
+def getDatabaseSchema(db):
+    # Get tables in db
+    conn = sqlite3.connect(db)
+    cursor = conn.cursor()
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+    # Filter for sql_sequence, which is not created by user
+    tables = [row[0] for row in cursor.fetchall() if not row[0].startswith("sqlite_")]
+
+    # Get columns in each table
+    schema = {}
+    for table in tables:
+        cursor.execute(f"PRAGMA table_info({table})")
+        temp_columns = cursor.fetchall()
+        columns = {row[1]: row[2] for row in temp_columns}
+        schema[table] = columns
+    conn.close()
+    return schema
 
 # Write errors to error_log.txt
 def writeError(error_message):
