@@ -17,11 +17,13 @@ def generateSQL(input):
     messages=[
         {
             "role": "user",
-            "content": 
+            "content": input
             
         }
     ]
     )
-    print(message.content)
+    # Print the text of the message
+    print(f"{message.content[0].text}")
     return
 
+generateSQL("Show me the top 5 products by total revenue in the last month.")
