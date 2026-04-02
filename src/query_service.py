@@ -10,7 +10,7 @@ def loadData(filename, table_name):
 
 
     csv_schema = schema_manager.getDataframeSchema(df)
-    db_schema = schema_manager.getTableSchema(DB)
+    db_schema = schema_manager.getDatabaseSchema(DB)
     # Compare schemas, see if any match, if so append instead of creating new table
     for table, columns in db_schema.items():
         if columns == csv_schema:
@@ -19,7 +19,13 @@ def loadData(filename, table_name):
             return 0
     # If no matching schema, create new table and insert data
     print(f"No existing table matches the schema of the CSV file. Creating new table '{table_name}' and inserting data.")
-    csv_loader.createTable(DB, df.columns.tolist(), table_name)
+    # Have to use sqlite3 here because createTable doesn't preserve types
+    create_table_statement = schema_manager.generateCreateTableStatement(df, table_name)
+    conn = sqlite3.connect(DB)
+    cursor = conn.cursor()
+    cursor.execute(create_table_statement)
+    conn.commit()
+    conn.close()
     csv_loader.insertData(DB, df, table_name)
     return 0
 
