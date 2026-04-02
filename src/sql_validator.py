@@ -26,6 +26,7 @@ def checkSQL(db, statement):
         cursor.execute(f"EXPLAIN QUERY PLAN {statement}")
     except sqlite3.OperationalError as e:
         print(f"Invalid query: {e}")
+        writeError(error_message=str(e))
         conn.close()
         return 1
 
