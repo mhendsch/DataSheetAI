@@ -14,10 +14,22 @@ def readTable(filename):
 
 # Generate SQL statement
 # Should have a PRIMARY KEY AUTOINCREMENT
-def generateCreateTableStatement(df):
+def generateCreateTableStatement(df, table_name):
+    # Map pandas datatypes to SQLite datatypes
+    dtype_mapping = {
+        "int64": "INTEGER",
+        "float64": "REAL",
+        "object": "TEXT",
+        "bool": "BOOLEAN",
+        "datetime64": "TEXT"
+    }
 
-    columns = [""]
-    return
+    columns = ["id, INTEGER PRIMARY KEY AUTOINCREMENT"]
+    for col, dtype in zip(df.columns, df.dtypes):
+        sql_type = dtype_map.get(str(dtype), "TEXT")  # Default to TEXT if unknown
+        columns.append(f"{col} {sql_type}")
+
+    return f"CREATE TABLE {table_name} ({', '.join(columns)});"
 
 # Gets existing table schema of specific table in db
 def getTableSchema(db, table_name):
@@ -60,10 +72,18 @@ def getDatabaseSchema(db):
 
 # Write errors to error_log.txt
 def writeError(error_message):
-    return
+    # Create error_log.txt if it doesn't exist, then append error message to it
+    if not os.path.exists("error_log.txt"):
+        with open("error_log.txt", "w") as f:
+            f.write("")
+    if not isinstance(error_message, str):
+        error_message = str(error_message)
+    with open("error_log.txt", "a") as f:
+        f.write(error_message + "\n")
+    return 0
 
 # Compare schemas of tables
-def compareTableSchemas(df1, df2):
-    return
+def compareTableSchemas(schema1, schema2):
+    return schema1 == schema2
 
 
