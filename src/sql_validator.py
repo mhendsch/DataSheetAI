@@ -9,7 +9,7 @@ import pandas
 # to prevent SQL injection
 def checkSQL(db, statement):
     # Check for malicious characters
-    if any(char in statement for char in [';', '--', '/*']):
+    if any(char in statement for char in ['--', '/*']):
         print("Query contains potentially malicious characters. Please provide a valid SQL query.")
         return 1
 
@@ -56,6 +56,7 @@ def checkSQL(db, statement):
     """
 
     conn.close()
+    print(f"\nQuery: {statement} passed validation.")
     return 0
 
 
@@ -65,4 +66,11 @@ You must demonstrate at least one case where:
     - The LLM-generated code was incorrect
     - Your tests caught the issue
     - You refined the implementation
+"""
+
+"""
+checkSQL("my_database.db", "SELECT * FROM countries WHERE 'alpha-2' = 'US';")  # Valid query
+checkSQL("my_database.db", "SELECT * FROM unknown_table;")  # Unknown table
+checkSQL("my_database.db", "SELECT unknown_column FROM countries;")  # Unknown column
+checkSQL("my_database.db", "DROP TABLE countries;")  # Malicious query
 """

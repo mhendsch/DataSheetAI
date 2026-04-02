@@ -12,20 +12,25 @@ client = anthropic.Anthropic()
 def generateSQL(db, input):
     
     table_columns = schema_manager.getDatabaseSchema(db)
-    print(table_columns)
+    # print(table_columns)
     
-    message = client.messages.create(
-    model = 'claude-haiku-4-5-20251001',
-    system=f"""You are an AI assistant tasked with converting user queries into SQL statements. The database uses SQLite and contains the following tables and columns: {table_columns}. Your task is to: 1. Generate a SQL query that accurately answers the user's question. 2. Ensure the SQL is compatible with SQLite syntax. 3. Only allow SELECT queries. 4. If the user asks for information from a table or column that doesn't exist, do NOT put '''sql in your response, as that is used to indicate a SQL block in your response. 5. Provide a short comment explaining what the query does. Output Format: - SQL Query - Explanation""",
-    max_tokens=1024,
-    messages=[
-        {
-            "role": "user",
-            "content": input
-            
-        }
-    ]
-    )
+    try :
+        message = client.messages.create(
+        model = 'claude-haiku-4-5-20251001',
+        system=f"""You are an AI assistant tasked with converting user queries into SQL statements. The database uses SQLite and contains the following tables and columns: {table_columns}. Your task is to: 1. Generate a SQL query that accurately answers the user's question. 2. Ensure the SQL is compatible with SQLite syntax. 3. Only allow SELECT queries. 4. If the user asks for information from a table or column that doesn't exist, do NOT put '''sql in your response, as that is used to indicate a SQL block in your response. 5. If a column or table has a '-' in it, make sure to enclose it in quotes, as sqlite will not parse it correctly without them. 6. Provide a short comment explaining what the query does. Output Format: - SQL Query - Explanation""",
+        max_tokens=1024,
+        messages=[
+            {
+                "role": "user",
+                "content": input
+                
+            }
+        ]
+        )
+    except Exception as e:
+        print(f"Error generating SQL: {e}")
+        print("\nMake sure to set your ANTHROPIC_API_KEY environment variable to a valid API key from Anthropic.")
+        return ""
     
     # Print the text of the message (for debugging purposes only))
     print(f"{message.content[0].text}")
@@ -51,6 +56,6 @@ def stripSQLfromResponse(response):
             sql_query += line + "\n"
     return sql_query
 
-myResponse = generateSQL("my_database.db", "What do you think alpha-2 means in the countries table? Show me the ones you think would be most interesting. Generate it on one line, I keep getting the error: Error: in prepare, no such column: alpha (1)")
-mySQL = stripSQLfromResponse(myResponse)
-print(f"Generated SQL Query:\n{mySQL}")
+#myResponse = generateSQL("my_database.db", "What do you think alpha-2 means in the countries table? Show me the ones you think would be most interesting.")
+#mySQL = stripSQLfromResponse(myResponse)
+#print(f"Generated SQL Query:\n{mySQL}")

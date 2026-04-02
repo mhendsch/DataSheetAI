@@ -25,12 +25,13 @@ def readTable(filename):
 # Should have a PRIMARY KEY AUTOINCREMENT
 def generateCreateTableStatement(df, table_name):
 
-    columns = ["id, INTEGER PRIMARY KEY AUTOINCREMENT"]
+    columns = ["id INTEGER PRIMARY KEY AUTOINCREMENT"]
     for col, dtype in zip(df.columns, df.dtypes):
-        sql_type = dtype_map.get(str(dtype), "TEXT")  # Default to TEXT if unknown
-        columns.append(f"{col} {sql_type}")
+        sql_type = dtype_mapping.get(str(dtype), "TEXT")  # Default to TEXT if unknown
+        columns.append(f'"{col}" {sql_type}') # Enclose column names in quotes to handle special characters
 
-    return f"CREATE TABLE {table_name} ({', '.join(columns)});"
+    
+    return f"CREATE TABLE IF NOT EXISTS {table_name} ({', '.join(columns)});"
 
 # Gets existing table schema of specific table in db
 def getTableSchema(db, table_name):

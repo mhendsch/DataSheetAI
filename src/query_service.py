@@ -13,9 +13,13 @@ def loadData(filename, table_name):
 
     csv_schema = schema_manager.getDataframeSchema(df)
     db_schema = schema_manager.getDatabaseSchema(DB)
+    # print(f"\nCSV Schema: {csv_schema}")
+    # print(f"\nDatabase Schema: {db_schema}")
     # Compare schemas, see if any match, if so append instead of creating new table
     for table, columns in db_schema.items():
-        if columns == csv_schema:
+        # Strip id from schema for comparison, since it is added automatically and won't be in the CSV schema
+        columns_without_id = {k: v for k, v in columns.items() if k != "id"}
+        if columns_without_id == csv_schema:
             print(f"Schema of CSV file matches existing table '{table}'. Appending data to this table.")
             csv_loader.insertData(DB, df, table)
             return 0
@@ -23,6 +27,7 @@ def loadData(filename, table_name):
     print(f"No existing table matches the schema of the CSV file. Creating new table '{table_name}' and inserting data.")
     # Have to use sqlite3 here because createTable doesn't preserve types
     create_table_statement = schema_manager.generateCreateTableStatement(df, table_name)
+    # print(f"\nGenerated CREATE TABLE statement:\n{create_table_statement}")
     conn = sqlite3.connect(DB)
     cursor = conn.cursor()
     cursor.execute(create_table_statement)
@@ -36,8 +41,8 @@ def askLLM(user_input):
     sql_query = llm_adapter.stripSQLfromResponse(response)
 
     if not sql_query.strip():
-        print("LLM did not generate a SQL query. Please try rephrasing your question.")
-        print(f"LLM Response:\n{response}")
+        print("\nLLM did not generate a SQL query. Please try rephrasing your question.")
+        # print(f"LLM Response:\n{response}")
         return None
     
     results = csv_loader.queryData(DB, sql_query.strip())

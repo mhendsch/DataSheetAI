@@ -67,7 +67,8 @@ def insertData(db, df, table_name):
     # Insert into table
     for index, row in df.iterrows():
         placeholders = ', '.join(['?'] * len(row))
-        cursor.execute(f"INSERT INTO {table_name} VALUES ({placeholders})", tuple(row))
+        columns = ', '.join([f'"{col}"' for col in df.columns])
+        cursor.execute(f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})", tuple(row))
 
     conn.commit()
     conn.close()
@@ -78,7 +79,7 @@ def insertData(db, df, table_name):
 def queryData(db, query):
     conn = sqlite3.connect(db)
     # Error check query
-    if (sql_validator.checkSQL(db, query) == 0):
+    if (sql_validator.checkSQL(db, query) == 1):
         print("Query failed validation. Please provide a valid SQL query.")
         conn.close()
         return 1
