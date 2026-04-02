@@ -51,6 +51,6 @@ def stripSQLfromResponse(response):
             sql_query += line + "\n"
     return sql_query
 
-myResponse = generateSQL("my_database.db", "Count how many students are in the class.")
+myResponse = generateSQL("my_database.db", "What do you think alpha-2 means in the countries table? Show me the ones you think would be most interesting. Generate it on one line, I keep getting the error: Error: in prepare, no such column: alpha (1)")
 mySQL = stripSQLfromResponse(myResponse)
 print(f"Generated SQL Query:\n{mySQL}")

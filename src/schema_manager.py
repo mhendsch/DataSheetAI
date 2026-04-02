@@ -1,6 +1,15 @@
 import sqlite3
 import pandas as pd
 
+# Map pandas datatypes to SQLite datatypes
+dtype_mapping = {
+    "int64": "INTEGER",
+    "float64": "REAL",
+    "object": "TEXT",
+    "bool": "BOOLEAN",
+    "datetime64": "TEXT"
+}
+
 # Prints information about panda dataframe
 def inspectTable(df):
     print("Table Schema:")
@@ -15,14 +24,6 @@ def readTable(filename):
 # Generate SQL statement
 # Should have a PRIMARY KEY AUTOINCREMENT
 def generateCreateTableStatement(df, table_name):
-    # Map pandas datatypes to SQLite datatypes
-    dtype_mapping = {
-        "int64": "INTEGER",
-        "float64": "REAL",
-        "object": "TEXT",
-        "bool": "BOOLEAN",
-        "datetime64": "TEXT"
-    }
 
     columns = ["id, INTEGER PRIMARY KEY AUTOINCREMENT"]
     for col, dtype in zip(df.columns, df.dtypes):
@@ -50,6 +51,14 @@ def getTableSchema(db, table_name):
     schema[table_name] = columns
     conn.close()
     return schema
+
+def getDataframeSchema(df):
+    # Get column names and datatypes of dataframe and convert to SQLite datatypes
+    columns = {}
+    for col, dtype in zip(df.columns, df.dtypes):
+        sql_type = dtype_mapping.get(str(dtype), "TEXT")  # Default to TEXT if unknown
+        columns[col] = sql_type
+    return columns
 
 # Gets table schema of entire database
 def getDatabaseSchema(db):

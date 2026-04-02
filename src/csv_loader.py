@@ -1,6 +1,7 @@
 import sqlite3
 import pandas as pd
 import sql_validator
+import schema_manager
 
 
 
