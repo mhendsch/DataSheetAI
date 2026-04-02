@@ -1,5 +1,7 @@
 import sqlite3
 import pandas
+import csv_loader
+import llm_adapter
 import schema_manager
 import sql_validator
 
@@ -46,7 +48,7 @@ def askLLM(user_input):
     return results
 
 def main():
-    loadData("countries.csv", "countries")
+    loadData("country_full.csv", "countries")
     loadData("colors.csv", "colors")
 
     print("\nDatasheet AI. Type 'q' to quit.")
@@ -59,17 +61,9 @@ def main():
             print("\nInput cannot be empty. Please enter a valid query.")
             continue
         
-        
-
-        # Call a function depending on input
-        # Validate against Database
-
-        # If valid, call LLM Adapter
-
-
-        # Take input from LLM adapter, create query
-        # Format query, make sure AI is not doing anything 
-        # it's not supposed to (use SQL validator)
+        results = askLLM(user_input)
+        if results is not None:
+            print(f"\nQuery Results:\n{results}")
 
 
     print("\nHave a nice day!")
