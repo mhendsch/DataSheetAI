@@ -9,16 +9,27 @@ import pandas
 # to prevent SQL injection
 def checkSQL(db, statement):
     # Check for malicious characters
-    if any(char in statement for char in ['"', "'", ';', '--']):
+    if any(char in statement for char in [';', '--', '/*']):
         print("Query contains potentially malicious characters. Please provide a valid SQL query.")
         return 1
+
     # Only allow SELECT queries
     if not statement.strip().lower().startswith('select'):
         print("Only SELECT queries are allowed.")
         return 1
+
     # Check for unknown tables and columns
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
+    # Smarter way of doing it
+    try:
+        cursor.execute(f"EXPLAIN QUERY PLAN {statement}")
+    except sqlite3.OperationalError as e:
+        print(f"Invalid query: {e}")
+        conn.close()
+        return 1
+
+    """
     # Get list of tables in database
     cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
     tables = [row[0] for row in cursor.fetchall()]
@@ -42,6 +53,7 @@ def checkSQL(db, statement):
         print("Query references unknown columns.")
         conn.close()
         return 1
+    """
 
     conn.close()
     return 0

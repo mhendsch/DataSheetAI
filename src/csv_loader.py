@@ -78,7 +78,7 @@ def insertData(db, df, table_name):
 def queryData(db, query):
     conn = sqlite3.connect(db)
     # Error check query
-    if (sql_validator.checkSQL(query) == 0):
+    if (sql_validator.checkSQL(db, query) == 0):
         print("Query failed validation. Please provide a valid SQL query.")
         conn.close()
         return 1
