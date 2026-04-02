@@ -29,22 +29,50 @@ def loadData(filename, table_name):
     csv_loader.insertData(DB, df, table_name)
     return 0
 
+def askLLM(user_input):
+    response = llm_adapter.generateSQL(DB, user_input)
+    sql_query = llm_adapter.stripSQLfromResponse(response)
 
-print("What would you like to do today?: ")
-user_input = input()
-while (user_input.lower() != "q"):
-    print("What would you like to do today?: ")
-    user_input = input()
+    if not sql_query.strip():
+        print("LLM did not generate a SQL query. Please try rephrasing your question.")
+        print(f"LLM Response:\n{response}")
+        return None
+    
+    results = csv_loader.queryData(DB, sql_query.strip())
+    if isinstance(results, int) and results == 1:
+        print("Query failed validation. Please try rephrasing your question.")
+        return None
+    
+    return results
 
-    # Call a function depending on input
-    # Validate against Database
+def main():
+    loadData("countries.csv", "countries")
+    loadData("colors.csv", "colors")
 
-    # If valid, call LLM Adapter
+    print("\nDatasheet AI. Type 'q' to quit.")
+    user_input = ""
+    while (user_input.lower() != "q"):
+        user_input = input("\nEnter your query (q to quit): ").strip()
+        if user_input.lower() == "q":
+            break
+        if not user_input:
+            print("\nInput cannot be empty. Please enter a valid query.")
+            continue
+        
+        
+
+        # Call a function depending on input
+        # Validate against Database
+
+        # If valid, call LLM Adapter
 
 
-    # Take input from LLM adapter, create query
-    # Format query, make sure AI is not doing anything 
-    # it's not supposed to (use SQL validator)
+        # Take input from LLM adapter, create query
+        # Format query, make sure AI is not doing anything 
+        # it's not supposed to (use SQL validator)
 
 
-print("\nHave a nice day!")
+    print("\nHave a nice day!")
+
+if __name__ == "__main__":
+    main()
