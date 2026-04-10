@@ -77,7 +77,7 @@ class TestLoadCSV:
         csv_file = db_path.parent / "test_data.csv"
         sample_df.to_csv(csv_file, index=False)
         # Load CSV into database
-        result = loadData(str(csv_file), "users", str(db_path))
+        result = loadCSV(str(csv_file))
         assert result == 0
         # Verify data was loaded
         conn = sqlite3.connect(db_path)
@@ -92,6 +92,19 @@ class TestLoadCSV:
         with open(csv_file, 'w') as f:
             f.write("")
         # Attempt to load empty CSV
-        result = loadData(str(csv_file), "users", str(db_path))
+        result = loadCSV(str(csv_file))
         assert result == 1
 
+    def test_load_csv_invalid_file(self, db_path):
+        # Attempt to load non-existent CSV
+        result = loadCSV("non_existent.csv")
+        assert result == 1
+
+    def test_load_csv_invalid_file_extension(self, db_path):
+        # Create a file with invalid extension
+        csv_file = db_path.parent / "invalid.txt"
+        with open(csv_file, 'w') as f:
+            f.write("name,age,city\nAlice,25,New York\nBob,30,Los Angeles\nCharlie,35,Chicago")
+        # Attempt to load invalid file
+        result = loadCSV(str(csv_file))
+        assert result == 1

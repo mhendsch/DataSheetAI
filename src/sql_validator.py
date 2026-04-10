@@ -11,11 +11,13 @@ def checkSQL(db, statement):
     # Check for malicious characters
     if any(char in statement for char in ['--', '/*']):
         print("Query contains potentially malicious characters. Please provide a valid SQL query.")
+        schema_manager.writeError(error_message="Query contains potentially malicious characters. Please provide a valid SQL query.")
         return 1
 
     # Only allow SELECT queries
     if not statement.strip().lower().startswith('select'):
         print("Only SELECT queries are allowed.")
+        schema_manager.writeError(error_message="Only SELECT queries are allowed.")
         return 1
 
     # Check for unknown tables and columns
@@ -26,7 +28,7 @@ def checkSQL(db, statement):
         cursor.execute(f"EXPLAIN QUERY PLAN {statement}")
     except sqlite3.OperationalError as e:
         print(f"Invalid query: {e}")
-        writeError(error_message=str(e))
+        schema_manager.writeError(error_message=str(e))
         conn.close()
         return 1
 

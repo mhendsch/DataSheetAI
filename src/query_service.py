@@ -43,13 +43,13 @@ def askLLM(user_input):
     if not sql_query.strip():
         print("\nLLM did not generate a SQL query. Please try rephrasing your question.")
         # print(f"LLM Response:\n{response}")
-        writeError(error_message="LLM did not generate a SQL query. Please try rephrasing your question.")
+        schema_manager.writeError(error_message="LLM did not generate a SQL query. Please try rephrasing your question.")
         return None
     
     results = csv_loader.queryData(DB, sql_query.strip())
     if isinstance(results, int) and results == 1:
         print("Query failed validation. Please try rephrasing your question.")
-        writeError(error_message="Query failed validation. Please try rephrasing your question.")
+        schema_manager.writeError(error_message="Query failed validation. Please try rephrasing your question.")
         return None
     
     return results
@@ -66,7 +66,7 @@ def main():
             break
         if not user_input:
             print("\nInput cannot be empty. Please enter a valid query.")
-            writeError(error_message="Input cannot be empty. Please enter a valid query.")
+            schema_manager.writeError(error_message="Input cannot be empty. Please enter a valid query.")
             continue
         
         results = askLLM(user_input)
