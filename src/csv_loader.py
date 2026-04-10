@@ -49,7 +49,12 @@ def loadCSV(filename):
         print(f"File '{filename}' does not exist. Please provide a valid filename.")
         schema_manager.writeError(error_message=f"File '{filename}' does not exist. Please provide a valid filename.")
         return 1
-    return pd.read_csv(filename)
+    try:
+        return pd.read_csv(filename)
+    except pd.errors.EmptyDataError:
+        print(f"File '{filename}' is empty. Please provide a non-empty CSV file.")
+        schema_manager.writeError(error_message=f"File '{filename}' is empty. Please provide a non-empty CSV file.")
+        return 1
 
 # Insert data from pandas dataframe into SQLite table
 # Constraints: Cannot use .to_sql() method, must use SQL INSERT statements
