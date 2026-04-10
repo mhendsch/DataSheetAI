@@ -1,6 +1,8 @@
 import pytest
 import pandas as pd
 from query_service import loadData, askLLM
+import os
+from unittest.mock import patch, MagicMock
 
 # Fixtures
 
