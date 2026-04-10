@@ -62,7 +62,8 @@ class TestCreateTable:
 class TestQueryData:
     def test_query_data_success(self, populated_db):
         result = queryData(populated_db, "SELECT name FROM users WHERE age > 28")
-        assert result == [("Bob",), ("Charlie",)]
+        assert isinstance(result, pd.DataFrame)
+        assert list(result['name']) == ["Bob", "Charlie"]
 
     def test_query_data_invalid_query(self, populated_db):
         result = queryData(populated_db, "SELECT non_existent_column FROM users")
