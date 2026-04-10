@@ -36,6 +36,18 @@ def createTable(db, columns, table_name):
 
 # Load CSV file into pandas dataframe
 def loadCSV(filename):
+    if (not isinstance(filename, str) or filename == ""):
+        print("Filename must be a non-empty string. Please provide a valid filename.")
+        schema_manager.writeError(error_message="Filename must be a non-empty string. Please provide a valid filename.")
+        return 1
+    if (not filename.endswith('.csv')):
+        print("Filename must end with .csv. Please provide a valid CSV filename.")
+        schema_manager.writeError(error_message="Filename must end with .csv. Please provide a valid CSV filename.")
+        return 1
+    if (not os.path.exists(filename)):
+        print(f"File '{filename}' does not exist. Please provide a valid filename.")
+        schema_manager.writeError(error_message=f"File '{filename}' does not exist. Please provide a valid filename.")
+        return 1
     return pd.read_csv(filename)
 
 # Insert data from pandas dataframe into SQLite table

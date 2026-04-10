@@ -29,7 +29,7 @@ def generateSQL(db, input):
         )
     except Exception as e:
         print(f"Error generating SQL: {e}")
-        writeError(error_message=str(e))
+        schema_manager.writeError(error_message=str(e))
         print("\nMake sure to set your ANTHROPIC_API_KEY environment variable to a valid API key from Anthropic.")
         return ""
     
