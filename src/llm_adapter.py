@@ -4,7 +4,9 @@ import sql_validator
 import schema_manager
 import anthropic
 import os
+from dotenv import load_dotenv
 
+load_dotenv()  # Load environment variables from .env file
 client = anthropic.Anthropic()
 
 
