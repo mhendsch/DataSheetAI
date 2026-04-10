@@ -1,6 +1,6 @@
 import sqlite3
 import pandas as pd
-import csv_loader
+from csv_loader import createTable, loadCSV, insertData, queryData
 import os
 
 # Fixtures:
