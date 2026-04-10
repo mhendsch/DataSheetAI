@@ -1,4 +1,5 @@
 import sqlite3
+import pytest
 import pandas as pd
 from csv_loader import createTable, loadCSV, insertData, queryData
 import os

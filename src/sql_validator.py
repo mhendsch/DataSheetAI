@@ -1,5 +1,6 @@
 import sqlite3
 import pandas
+import schema_manager
 
 # Check SQL statement for malicious code
 # Only allow SELECT queries
