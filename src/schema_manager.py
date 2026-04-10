@@ -50,6 +50,7 @@ def getTableSchema(db, table_name):
     temp_columns = cursor.fetchall()
     # Concatenate column names and types
     columns = {row[1]: row[2] for row in temp_columns}
+    schema = {}
     schema[table_name] = columns
     conn.close()
     return schema
