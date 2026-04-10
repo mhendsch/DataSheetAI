@@ -1,5 +1,6 @@
 import sqlite3
 import pandas as pd
+import os
 
 # Map pandas datatypes to SQLite datatypes
 dtype_mapping = {
