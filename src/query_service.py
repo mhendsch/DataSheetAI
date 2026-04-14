@@ -9,7 +9,7 @@ DB = "my_database.db"
 
 def loadData(filename, table_name):
     df = csv_loader.loadCSV(filename)
-    if df is None:
+    if not isinstance(df, pandas.DataFrame):
         return 1
     csv_schema = schema_manager.getDataframeSchema(df)
     db_schema = schema_manager.getDatabaseSchema(DB)

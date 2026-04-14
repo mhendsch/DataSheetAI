@@ -11,6 +11,18 @@ dtype_mapping = {
     "datetime64": "TEXT"
 }
 
+# Helper function to map pandas dtype to SQLite dtype
+def map_dtype(dtype_str):
+    dtype_str = str(dtype_str)
+
+    if "int" in dtype_str:
+        return "INTEGER"
+    if "float" in dtype_str:
+        return "REAL"
+    if "bool" in dtype_str:
+        return "BOOLEAN"
+    return "TEXT"
+
 # Prints information about panda dataframe
 def inspectTable(df):
     print("Table Schema:")
@@ -25,14 +37,25 @@ def readTable(filename):
 # Generate SQL statement
 # Should have a PRIMARY KEY AUTOINCREMENT
 def generateCreateTableStatement(df, table_name):
-
     columns = ["id INTEGER PRIMARY KEY AUTOINCREMENT"]
-    for col, dtype in zip(df.columns, df.dtypes):
-        sql_type = dtype_mapping.get(str(dtype), "TEXT")  # Default to TEXT if unknown
-        columns.append(f'"{col}" {sql_type}') # Enclose column names in quotes to handle special characters
-
     
-    return f"CREATE TABLE IF NOT EXISTS {table_name} ({', '.join(columns)});"
+    for col in df.columns:
+        dtype_str = str(df[col].dtype)
+
+        if "datetime" in dtype_str:
+            sql_type = "DATE"
+        elif "int" in dtype_str:
+            sql_type = "INTEGER"
+        elif "float" in dtype_str:
+            sql_type = "REAL"
+        elif "bool" in dtype_str:
+            sql_type = "BOOLEAN"
+        else:
+            sql_type = "TEXT"
+
+        columns.append(f'"{col}" {sql_type}')
+
+    return f'CREATE TABLE IF NOT EXISTS {table_name} ({", ".join(columns)});'
 
 # Gets existing table schema of specific table in db
 def getTableSchema(db, table_name):
@@ -56,17 +79,25 @@ def getTableSchema(db, table_name):
     return schema
 
 def getDataframeSchema(df):
-    # Get column names and datatypes of dataframe and convert to SQLite datatypes
     columns = {}
+
     for col in df.columns:
         dtype_str = str(df[col].dtype)
+
         if "datetime" in dtype_str:
             sql_type = "DATE"
+        elif "int" in dtype_str:
+            sql_type = "INTEGER"
+        elif "float" in dtype_str:
+            sql_type = "REAL"
+        elif "bool" in dtype_str:
+            sql_type = "BOOLEAN"
         else:
-            sql_type = dtype_mapping.get(str(dtype), "TEXT")  # Default to TEXT if unknown
-        columns[col] = sql_type
-    return columns
+            sql_type = "TEXT"
 
+        columns[col] = sql_type
+
+    return columns
 # Gets table schema of entire database
 def getDatabaseSchema(db):
     # Get tables in db

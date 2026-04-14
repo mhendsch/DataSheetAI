@@ -23,8 +23,11 @@ def sample_schema():
     }
 
 class TestLoadData:
-    def test_load_data_valid(self, sample_df):
-        result = loadData("sample.csv", "sample_table")
+    def test_load_data_valid(self, sample_df, tmp_path):
+        file_path = tmp_path / "sample.csv"
+        sample_df.to_csv(file_path, index=False)
+
+        result = loadData(str(file_path), "sample_table")
         assert result == 0
 
     def test_load_data_invalid_filename(self):
@@ -39,13 +42,13 @@ class TestLoadData:
         result = loadData("nonexistent.csv", "sample_table")
         assert result == 1
 
-    def test_load_data_empty_file(self):
+    def test_load_data_empty_file(self, tmp_path):
         # Create an empty CSV file for testing
-        with open("empty.csv", "w") as f:
-            pass
-        result = loadData("empty.csv", "sample_table")
+        file_path = tmp_path / "empty.csv"
+        file_path.write_text("")
+
+        result = loadData(str(file_path), "sample_table")
         assert result == 1
-        os.remove("empty.csv")
 
 class TestAskLLM:
     def test_returns_dataframe_on_valid_query(self, sample_df):
