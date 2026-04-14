@@ -9,6 +9,10 @@ import schema_manager
 # From Cybersecurity: disallow characters like " or - 
 # to prevent SQL injection
 def checkSQL(db, statement):
+    if (not isinstance(statement, str) or statement.strip() == ""):
+        print("SQL statement must be a non-empty string. Please provide a valid SQL statement.")
+        schema_manager.writeError(error_message="SQL statement must be a non-empty string. Please provide a valid SQL statement.")
+        return 1
     # Check for malicious characters
     if any(char in statement for char in ['--', '/*']):
         print("Query contains potentially malicious characters. Please provide a valid SQL query.")
