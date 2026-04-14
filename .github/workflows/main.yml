@@ -45,5 +45,5 @@ jobs:
         coverage report -m
     - name: Test CPU profile
       run: |
-        python -m cProfile query_service.py
+        cProfile -m pytest
     
