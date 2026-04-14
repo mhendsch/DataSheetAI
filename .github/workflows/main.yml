@@ -41,9 +41,9 @@ jobs:
         PYTHONTRACEMALLOC: '1'
     - name: Test with coverage
       run: |
-        python -m coverage run /src/query_service.py
-        python -m coverage report
+        coverage run -m pytest
+        coverage report -m
     - name: Test CPU profile
       run: |
-        python -m cProfile query_service.py
+        python -m cProfile -m pytest
     
