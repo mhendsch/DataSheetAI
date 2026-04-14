@@ -13,8 +13,22 @@ client = anthropic.Anthropic()
 # Generate SQL statement based on user input
 def generateSQL(db, input):
     
+    if (not isinstance(input, str) or input.strip() == ""):
+        print("User input must be a non-empty string. Please provide a valid input.")
+        schema_manager.writeError(error_message="User input must be a non-empty string. Please provide a valid input.")
+        return ""
+
+    if (not isinstance(db, str) or db.strip() == ""):
+        print("Database name must be a non-empty string. Please provide a valid database name.")
+        schema_manager.writeError(error_message="Database name must be a non-empty string. Please provide a valid database name.")
+        return ""
+
     table_columns = schema_manager.getDatabaseSchema(db)
-    # print(table_columns)
+
+    if not table_columns:
+        print("Failed to retrieve database schema. Please check the database connection and try again.")
+        schema_manager.writeError(error_message="Failed to retrieve database schema. Please check the database connection and try again.")
+        return ""
     
     try :
         message = client.messages.create(
@@ -54,10 +68,10 @@ def stripSQLfromResponse(response):
             continue
         elif line.strip().startswith("```") and in_sql_block:
             in_sql_block = False
-            continue
+            break
         if in_sql_block:
             sql_query += line + "\n"
-    return sql_query
+    return sql_query.strip()
 
 #myResponse = generateSQL("my_database.db", "What do you think alpha-2 means in the countries table? Show me the ones you think would be most interesting.")
 #mySQL = stripSQLfromResponse(myResponse)
