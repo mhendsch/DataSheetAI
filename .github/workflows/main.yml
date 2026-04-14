@@ -45,5 +45,5 @@ jobs:
         coverage report -m
     - name: Test CPU profile
       run: |
-        cProfile -m pytest
+        python -m cProfile -m pytest
     
