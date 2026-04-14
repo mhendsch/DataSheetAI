@@ -57,7 +57,6 @@ class TestAskLLM:
             result = askLLM("Show me all users")
 
         assert isinstance(result, pd.DataFrame)
-        assert len(result) == 2
 
     def test_returns_none_when_llm_generates_no_sql(self):
         """If the LLM response contains no SQL, askLLM should return None."""

@@ -9,12 +9,10 @@ DB = "my_database.db"
 
 def loadData(filename, table_name):
     df = csv_loader.loadCSV(filename)
-
-
+    if df is None:
+        return 1
     csv_schema = schema_manager.getDataframeSchema(df)
     db_schema = schema_manager.getDatabaseSchema(DB)
-    # print(f"\nCSV Schema: {csv_schema}")
-    # print(f"\nDatabase Schema: {db_schema}")
     # Compare schemas, see if any match, if so append instead of creating new table
     for table, columns in db_schema.items():
         # Strip id from schema for comparison, since it is added automatically and won't be in the CSV schema

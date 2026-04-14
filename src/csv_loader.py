@@ -40,21 +40,21 @@ def loadCSV(filename):
     if (not isinstance(filename, str) or filename == ""):
         print("Filename must be a non-empty string. Please provide a valid filename.")
         schema_manager.writeError(error_message="Filename must be a non-empty string. Please provide a valid filename.")
-        return 1
+        return None
     if (not filename.endswith('.csv')):
         print("Filename must end with .csv. Please provide a valid CSV filename.")
         schema_manager.writeError(error_message="Filename must end with .csv. Please provide a valid CSV filename.")
-        return 1
+        return None
     if (not os.path.exists(filename)):
         print(f"File '{filename}' does not exist. Please provide a valid filename.")
         schema_manager.writeError(error_message=f"File '{filename}' does not exist. Please provide a valid filename.")
-        return 1
+        return None
     try:
         return pd.read_csv(filename)
     except pd.errors.EmptyDataError:
         print(f"File '{filename}' is empty. Please provide a non-empty CSV file.")
         schema_manager.writeError(error_message=f"File '{filename}' is empty. Please provide a non-empty CSV file.")
-        return 1
+        return None
 
 # Insert data from pandas dataframe into SQLite table
 # Constraints: Cannot use .to_sql() method, must use SQL INSERT statements

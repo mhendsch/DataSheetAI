@@ -58,8 +58,12 @@ def getTableSchema(db, table_name):
 def getDataframeSchema(df):
     # Get column names and datatypes of dataframe and convert to SQLite datatypes
     columns = {}
-    for col, dtype in zip(df.columns, df.dtypes):
-        sql_type = dtype_mapping.get(str(dtype), "TEXT")  # Default to TEXT if unknown
+    for col in df.columns:
+        dtype_str = str(df[col].dtype)
+        if "datetime" in dtype_str:
+            sql_type = "DATE"
+        else:
+            sql_type = dtype_mapping.get(str(dtype), "TEXT")  # Default to TEXT if unknown
         columns[col] = sql_type
     return columns
 
