@@ -7,7 +7,7 @@
 - query_service.py loads CSVs from database by calling loadCSV from csv_loader.py
 - query_service.py checks the schema of these CSVs by calling schema_manager.py
 - If schemas match any already existing in database, data is inserted into database using csv_loader.py
-- If schema doesn't match, query service calls the schema manager to generate a create table statement, which is then executed in sqlite3
+- If schema doesn't match, query service calls the schema manager to generate a create table statement, which is then executed in sqlite3 by csv_loader
 
 ### User input
 - Query service takes user input, calls llm_adapter.py
