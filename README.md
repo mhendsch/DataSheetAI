@@ -17,3 +17,6 @@
 - Instructions are passed to csv_loader
 - csv_loader queries SQL validator, to ensure SQL meets safety and content standards
 - If instructions are deemed acceptable, csv_loader queries sqlite3 database and returns results
+
+
+![Gif showing flow of DatasheetAI program](https://github.com/mhendsch/DataSheetAI/blob/main/DatasheetAI.gif)
