@@ -12,7 +12,7 @@
 ### User input
 - Query service takes user input, calls llm_adapter.py
 - llm_adapter asks schema_manager for schemas for all tables in database
-- llm_adapter creates SQL query based on user input
+- llm_adapter asks LLM to create SQL query based on user input
 - SQL instructions are stripped from response
 - Instructions are passed to csv_loader
 - csv_loader queries SQL validator, to ensure SQL meets safety and content standards
