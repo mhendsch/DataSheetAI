@@ -33,7 +33,30 @@ def generateSQL(db, input):
     try :
         message = client.messages.create(
         model = 'claude-haiku-4-5-20251001',
-        system=f"""You are an AI assistant tasked with converting user queries into SQL statements. The database uses SQLite and contains the following tables and columns: {table_columns}. Your task is to: 1. Generate a SQL query that accurately answers the user's question. 2. Ensure the SQL is compatible with SQLite syntax. 3. Only allow SELECT queries. 4. If the user asks for information from a table or column that doesn't exist, do NOT put '''sql in your response, as that is used to indicate a SQL block in your response. 5. If a column or table has a '-' in it, make sure to enclose it in quotes, as sqlite will not parse it correctly without them. 6. When joining multiple tables, always use the most specific join conditions possible to avoid duplicate rows. Prefer subqueries or CTEs over multiple LEFT JOINs when retrieving one row per entity. 7. Provide a short comment explaining what the query does. Output Format: - SQL Query - Explanation""",
+        system=f"""You are an AI assistant that converts natural language questions into SQLite SQL queries.
+
+            DATABASE SCHEMA:
+            {table_columns}
+
+            RULES:
+            1. Only generate SELECT queries — never INSERT, UPDATE, DELETE, or DROP.
+            2. Only reference tables and columns that exist in the schema above. If the user asks for something that doesn't exist, respond in plain English explaining what's unavailable — do NOT output a ```sql block.
+            3. Enclose any column or table name containing special characters (-, spaces, etc.) in double quotes.
+            4. Always use SQLite-compatible syntax.
+            5. To avoid duplicate rows when joining multiple tables, use correlated subqueries or CTEs instead of multiple LEFT JOINs on the same base table. Example pattern:
+            SELECT
+                c.company_name,
+                (SELECT revenue FROM financials f WHERE f.company_id = c.company_id AND f.fiscal_quarter = 'Q2' LIMIT 1) AS actual_revenue,
+                (SELECT forecasted_revenue FROM forecasts fo WHERE fo.company_id = c.company_id AND fo.fiscal_quarter = 'Q2' LIMIT 1) AS forecasted_revenue
+            FROM companies c
+            6. If a query genuinely requires multiple JOINs, use DISTINCT or GROUP BY to prevent cartesian products.
+            7. When using subqueries to retrieve a single value, always use LIMIT 1 to ensure only one row is returned per entity.
+
+            OUTPUT FORMAT:
+            ```sql
+            <your query here>
+            ```
+            Explanation: <one or two sentences explaining what the query does>""",
         max_tokens=1024,
         messages=[
             {

@@ -45,6 +45,8 @@ def askLLM(user_input):
         print("Query failed validation. Please try rephrasing your question.")
         schema_manager.writeError(error_message="Query failed validation. Please try rephrasing your question.")
         return None
+
+    results = results.drop_duplicates() # Remove duplicate data
     
     return results
 
@@ -78,9 +80,10 @@ def main():
             pandas.set_option('display.width', None)
             pandas.set_option('display.max_colwidth', None)
             #print(f"\nQuery Results:\n{results}")
-            output_file = "query_results.csv"
-            results.to_csv(output_file, index=False)
-            print(f"\nResults saved to {output_file} ({len(results)} rows)")
+            #output_file = "query_results.csv"
+            #results.to_csv(output_file, index=False)
+            results.to_html("query_results.html", index=False)
+            print(f"\nResults saved to query_results.html ({len(results)} rows)")
 
 
     print("\nHave a nice day!")
