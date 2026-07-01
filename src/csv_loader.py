@@ -35,6 +35,14 @@ def createTable(db, columns, table_name):
     conn.close()
     return 0
 
+def createTableFromStatement(db, statement):
+    conn = sqlite3.connect(db)
+    cursor = conn.cursor()
+    cursor.execute(statement)
+    conn.commit()
+    conn.close()
+    return 0
+
 # Load CSV file into pandas dataframe
 def loadCSV(filename):
     if (not isinstance(filename, str) or filename == ""):

@@ -34,6 +34,7 @@ def inspectTable(df):
 def readTable(filename):
     return pd.read_csv(filename)
 
+
 # Generate SQL statement
 # Should have a PRIMARY KEY AUTOINCREMENT
 def generateCreateTableStatement(df, table_name):

@@ -26,11 +26,7 @@ def loadData(filename, table_name):
     # Have to use sqlite3 here because createTable doesn't preserve types
     create_table_statement = schema_manager.generateCreateTableStatement(df, table_name)
     # print(f"\nGenerated CREATE TABLE statement:\n{create_table_statement}")
-    conn = sqlite3.connect(DB)
-    cursor = conn.cursor()
-    cursor.execute(create_table_statement)
-    conn.commit()
-    conn.close()
+    csv_loader.createTableFromStatement(DB, create_table_statement)
     csv_loader.insertData(DB, df, table_name)
     return 0
 
@@ -53,8 +49,17 @@ def askLLM(user_input):
     return results
 
 def main():
-    loadData("country_full.csv", "countries")
-    loadData("colors.csv", "colors")
+    #loadData("country_full.csv", "countries")
+    #loadData("colors.csv", "colors")
+    #loadData("customers-1000.csv", "customers")
+    #loadData("verification_scores.csv", "verification_scores")
+    #loadData("users.csv", "users")
+    #loadData("local_events.csv", "local_events")
+   # loadData("activities.csv", "activities")
+    #loadData("audit_log.csv", "audit_log")
+    #loadData("companies.csv", "companies")
+    #loadData("financials.csv", "financials")
+    #loadData("forecasts.csv", "forecasts")
 
     print("\nDatasheet AI. Type 'q' to quit.")
     user_input = ""
@@ -69,7 +74,13 @@ def main():
         
         results = askLLM(user_input)
         if results is not None:
-            print(f"\nQuery Results:\n{results}")
+            pandas.set_option('display.max_columns', None)
+            pandas.set_option('display.width', None)
+            pandas.set_option('display.max_colwidth', None)
+            #print(f"\nQuery Results:\n{results}")
+            output_file = "query_results.csv"
+            results.to_csv(output_file, index=False)
+            print(f"\nResults saved to {output_file} ({len(results)} rows)")
 
 
     print("\nHave a nice day!")
